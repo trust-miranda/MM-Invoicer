@@ -1,0 +1,108 @@
+{
+  "chartData": [
+    {
+      "id": 1,
+      "data": [
+        { "month": "Janeiro", "vendas": 186, "compras": 124 },
+        { "month": "Fevereiro", "vendas": 305, "compras": 262 },
+        { "month": "Março", "vendas": 194, "compras": 132 },
+        { "month": "Abril", "vendas": 297, "compras": 271 },
+        { "month": "Maio", "vendas": 237, "compras": 172 },
+        { "month": "Junho", "vendas": 172, "compras": 102 },
+        { "month": "Julho", "vendas": 209, "compras": 202 },
+        { "month": "Agosto", "vendas": 214, "compras": 163 }
+      ]
+    },
+    {
+      "id": 2,
+      "data": [
+        { "month": "Janeiro", "vendas": 153, "compras": 107 },
+        { "month": "Fevereiro", "vendas": 218, "compras": 159 },
+        { "month": "Março", "vendas": 247, "compras": 193 },
+        { "month": "Abril", "vendas": 189, "compras": 141 },
+        { "month": "Maio", "vendas": 232, "compras": 178 },
+        { "month": "Junho", "vendas": 276, "compras": 219 },
+        { "month": "Julho", "vendas": 221, "compras": 162 },
+        { "month": "Agosto", "vendas": 267, "compras": 205 }
+      ]
+    },
+    {
+      "id": 3,
+      "data": [
+        { "month": "Janeiro", "vendas": 127, "compras": 83 },
+        { "month": "Fevereiro", "vendas": 179, "compras": 135 },
+        { "month": "Março", "vendas": 123, "compras": 71 },
+        { "month": "Abril", "vendas": 168, "compras": 114 },
+        { "month": "Maio", "vendas": 214, "compras": 159 },
+        { "month": "Junho", "vendas": 159, "compras": 101 },
+        { "month": "Julho", "vendas": 205, "compras": 147 },
+        { "month": "Agosto", "vendas": 152, "compras": 91 }
+      ]
+    },
+    {
+      "id": 4,
+      "data": [
+        { "month": "Janeiro", "vendas": 109, "compras": 67 },
+        { "month": "Fevereiro", "vendas": 163, "compras": 113 },
+        { "month": "Março", "vendas": 107, "compras": 53 },
+        { "month": "Abril", "vendas": 151, "compras": 97 },
+        { "month": "Maio", "vendas": 196, "compras": 141 },
+        { "month": "Junho", "vendas": 241, "compras": 183 },
+        { "month": "Julho", "vendas": 187, "compras": 129 },
+        { "month": "Agosto", "vendas": 234, "compras": 173 }
+      ]
+    },
+    {
+      "id": 5,
+      "data": [
+        { "month": "Janeiro", "vendas": 142, "compras": 91 },
+        { "month": "Fevereiro", "vendas": 193, "compras": 143 },
+        { "month": "Março", "vendas": 137, "compras": 81 },
+        { "month": "Abril", "vendas": 181, "compras": 123 },
+        { "month": "Maio", "vendas": 226, "compras": 167 },
+        { "month": "Junho", "vendas": 171, "compras": 109 },
+        { "month": "Julho", "vendas": 217, "compras": 155 },
+        { "month": "Agosto", "vendas": 164, "compras": 99 }
+      ]
+    },
+    {
+      "id": 6,
+      "data": [
+        { "month": "Janeiro", "vendas": 135, "compras": 73 },
+        { "month": "Fevereiro", "vendas": 187, "compras": 123 },
+        { "month": "Março", "vendas": 131, "compras": 63 },
+        { "month": "Abril", "vendas": 175, "compras": 107 },
+        { "month": "Maio", "vendas": 220, "compras": 151 },
+        { "month": "Junho", "vendas": 165, "compras": 93 },
+        { "month": "Julho", "vendas": 211, "compras": 139 },
+        { "month": "Agosto", "vendas": 158, "compras": 83 }
+      ]
+    },
+    {
+      "id": 7,
+      "data": [
+        { "month": "Janeiro", "vendas": 118, "compras": 53 },
+        { "month": "Fevereiro", "vendas": 169, "compras": 103 },
+        { "month": "Março", "vendas": 113, "compras": 43 },
+        { "month": "Abril", "vendas": 157, "compras": 87 },
+        { "month": "Maio", "vendas": 202, "compras": 131 },
+        { "month": "Junho", "vendas": 247, "compras": 173 },
+        { "month": "Julho", "vendas": 193, "compras": 119 },
+        { "month": "Agosto", "vendas": 240, "compras": 163 }
+      ]
+    },
+    {
+      "id": 8,
+      "data": [
+        { "month": "Janeiro", "vendas": 172, "compras": 121 },
+        { "month": "Fevereiro", "vendas": 223, "compras": 171 },
+        { "month": "Março", "vendas": 167, "compras": 111 },
+        { "month": "Abril", "vendas": 211, "compras": 153 },
+        { "month": "Maio", "vendas": 256, "compras": 197 },
+        { "month": "Junho", "vendas": 201, "compras": 139 },
+        { "month": "Julho", "vendas": 247, "compras": 185 },
+        { "month": "Agosto", "vendas": 194, "compras": 129 }
+      ]
+    }
+  ]
+}

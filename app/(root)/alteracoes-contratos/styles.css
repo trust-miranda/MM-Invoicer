@@ -1,0 +1,17 @@
+/* .pedidos {
+  overflow: hidden;
+}
+
+.pedidos .overflow-x-auto {
+  overflow-x: auto;
+}
+
+.pedidos .overflow-x-auto table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.pedidos .overflow-x-auto th,
+.pedidos .overflow-x-auto td {
+  white-space: nowrap;
+} */

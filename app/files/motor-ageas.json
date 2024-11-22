@@ -1,0 +1,31 @@
+[
+  {
+    "id": "83D7F2C7-D747-45AA-81DA-808D2A3511AD",
+    "identidade": 32048,
+    "seguradora": "AGEAS PORTUGAL - COMPANHIA SEGUROS SA",
+    "nomesinistrado": "ELISABETE MARISA SILVA PASTOR",
+    "idRamo": "AT",
+    "estadoSinistro": "Aceite",
+    "estadoClinico": "Alta",
+    "pensionista": "true",
+    "dataadmissao": "Mon Sep 06 2021 01:00:00 GMT+0100 (Hora de verão da Europa Ocidental)",
+    "dataalta": "Mon Mar 04 2024 00:00:00 GMT+0000 (Hora padrão da Europa Ocidental)",
+    "idprocesso": "343434",
+    "numapolice": "001010037769",
+    "numprocseguradora": "AT20080008012",
+    "ResultLinhas": [
+      {
+        "idlinha": 1,
+        "ref": "90.99.00.01",
+        "descricao": "Fisioterapia (cada sessão)",
+        "qtt": 20,
+        "valorunit": 11.22,
+        "idrequisicao": "3187644",
+        "idrequisicaoactomedico": "",
+        "datafinal": "1723849200",
+        "dataopen": "1718665200",
+        "idavenca": null
+      }
+    ]
+  }
+]

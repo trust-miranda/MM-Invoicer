@@ -1,0 +1,68 @@
+[
+  {
+    "nome": "TODAS",
+    "Seguradora": "TODAS",
+    "no": 0,
+    "u_noportal": 0
+  },
+  {
+    "nome": "VICTORIA Seguros SA",
+    "Seguradora": "VICTORIA",
+    "no": 9.0,
+    "u_noportal": 91.0
+  },
+  {
+    "nome": "Zurich Insurance Europe AG, Sucursal em Portugal       ",
+    "Seguradora": "ZURICH",
+    "no": 12.0,
+    "u_noportal": 248.0
+  },
+  {
+    "nome": "AGEAS PORTUGAL - COMPANHIA SEGUROS SA",
+    "Seguradora": "AGEAS",
+    "no": 111.0,
+    "u_noportal": 32048.0
+  },
+  {
+    "nome": "Aon Portugal, S.A.",
+    "Seguradora": "AON",
+    "no": 246.0,
+    "u_noportal": 32203.0
+  },
+  {
+    "nome": "OCIDENTAL COMPANHIA PORTUGUESA SEGUROS SA",
+    "Seguradora": "OCIDENTAL",
+    "no": 252.0,
+    "u_noportal": 32204.0
+  },
+  {
+    "nome": "CREDITO AGRICOLA SEGUROS - COMPANHIA DE SEGUROS DE RAMO",
+    "Seguradora": "CA SEGUROS",
+    "no": 325.0,
+    "u_noportal": 32355.0
+  },
+  {
+    "nome": "Generali Seguros y Reaseguros, S.A. – Sucursal em PT   ",
+    "Seguradora": "GENERALI",
+    "no": 394.0,
+    "u_noportal": 32015.0
+  },
+  {
+    "nome": "JERONIMO MARTINS SGPS S A",
+    "Seguradora": "GJM",
+    "no": 477.0,
+    "u_noportal": 32381.0
+  },
+  {
+    "nome": "UNA Seguros",
+    "Seguradora": "UNA",
+    "no": 1413.0,
+    "u_noportal": 32412.0
+  },
+  {
+    "nome": "COMPANHIA DE SEGUROS ALLIANZ PORTUGAL, S.A.",
+    "Seguradora": "ALLIANZ",
+    "no": 3742.0,
+    "u_noportal": 32493.0
+  }
+]
