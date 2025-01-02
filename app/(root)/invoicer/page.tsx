@@ -67,7 +67,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const description =
-  "An orders dashboard with a sidebar navigation. The sidebar has icon navigation. The content area has a breadcrumb and search in the header. The main area has a list of recent orders with a filter and export button. The main area also has a detailed view of a single order with order details, shipping information, billing information, customer information, and payment information.";
+  "An invoice dashboard with a sidebar navigation. The sidebar has icon navigation. The content area has a breadcrumb and search in the header. The main area has a list of recent invoices with a filter and export button. The main area also has a detailed view of a single invoice with billing information, customer information and payment information.";
 
 export default function Invoicer() {
   return (
@@ -260,7 +260,6 @@ export default function Invoicer() {
               <DropdownMenuLabel>A minha conta</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Definições</DropdownMenuItem>
-              <DropdownMenuItem>Ajuda</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Logout</DropdownMenuItem>
             </DropdownMenuContent>
@@ -274,19 +273,17 @@ export default function Invoicer() {
                 x-chunk="dashboard-05-chunk-0 "
               >
                 <CardHeader className="pb-3">
-                  <CardTitle>Invoicer</CardTitle>
+                  <CardTitle>*INSERIR TITULO*</CardTitle>
                   <CardDescription className="max-w-lg text-balance leading-relaxed">
-                    Emitir fatura manualmente...
+                    *inserir texto aqui*
                   </CardDescription>
                 </CardHeader>
-                <CardFooter>
-                  <Button>Criar Fatura</Button>
-                </CardFooter>
+                <CardFooter></CardFooter>
               </Card>
               <Card x-chunk="dashboard-05-chunk-1" className=" bg-white">
                 <CardHeader className="pb-2">
                   <CardDescription>Esta Semana</CardDescription>
-                  <CardTitle className="text-4xl">$1,329</CardTitle>
+                  <CardTitle className="text-4xl">€ 7 291</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-xs text-muted-foreground">
@@ -303,7 +300,7 @@ export default function Invoicer() {
               <Card className=" bg-white" x-chunk="dashboard-05-chunk-2">
                 <CardHeader className="pb-2">
                   <CardDescription>Este Mês</CardDescription>
-                  <CardTitle className="text-4xl">$5,329</CardTitle>
+                  <CardTitle className="text-4xl">€ 255 329</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-xs text-muted-foreground">
@@ -322,13 +319,10 @@ export default function Invoicer() {
               <div className="flex items-center text-xs ">
                 <TabsList>
                   <TabsTrigger className="text-xs bg-white" value="week">
-                    Semana
+                    Catálogo
                   </TabsTrigger>
                   <TabsTrigger className="text-xs bg-white" value="month">
-                    Mês
-                  </TabsTrigger>
-                  <TabsTrigger className="text-xs bg-white" value="year">
-                    Ano
+                    MMInvoicer
                   </TabsTrigger>
                 </TabsList>
                 <div className="ml-auto flex items-center gap-2">
@@ -349,13 +343,27 @@ export default function Invoicer() {
                       <DropdownMenuLabel>Filtrar por</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuCheckboxItem checked>
-                        Emitidas
+                        Ageas
                       </DropdownMenuCheckboxItem>
                       <DropdownMenuCheckboxItem>
-                        Recusadas
+                        Allianz
+                      </DropdownMenuCheckboxItem>
+                      <DropdownMenuCheckboxItem>AON</DropdownMenuCheckboxItem>
+                      <DropdownMenuCheckboxItem>
+                        CA Seguros
                       </DropdownMenuCheckboxItem>
                       <DropdownMenuCheckboxItem>
-                        Creditadas
+                        Generali
+                      </DropdownMenuCheckboxItem>
+                      <DropdownMenuCheckboxItem>
+                        Ocidental
+                      </DropdownMenuCheckboxItem>
+                      <DropdownMenuCheckboxItem>Una</DropdownMenuCheckboxItem>
+                      <DropdownMenuCheckboxItem>
+                        Victoria
+                      </DropdownMenuCheckboxItem>
+                      <DropdownMenuCheckboxItem>
+                        Zurich
                       </DropdownMenuCheckboxItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -374,10 +382,10 @@ export default function Invoicer() {
                   className=" bg-white"
                   x-chunk="dashboard-05-chunk-3 text-xs"
                 >
-                  <CardHeader className="px-7 text-xs">
+                  <CardHeader className="px-6 text-xs py-4">
                     <CardTitle>Faturação</CardTitle>
-                    <CardDescription>
-                      Últimas faturas emitidas...
+                    <CardDescription className="mt-2">
+                      Últimas faturas emitidas
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -386,16 +394,22 @@ export default function Invoicer() {
                         <TableRow className="text-xs">
                           <TableHead className="text-xs">Cliente</TableHead>
                           <TableHead className="hidden text-xs sm:table-cell">
-                            Tipo
+                            Nº Fatura
+                          </TableHead>
+                          <TableHead className="hidden text-xs sm:table-cell">
+                            Nº Processo TRUST
+                          </TableHead>
+                          <TableHead className="hidden text-xs sm:table-cell">
+                            Nº Processo Companhia
                           </TableHead>
                           <TableHead className="hidden text-xs sm:table-cell">
                             Estado
                           </TableHead>
                           <TableHead className="hidden text-xs md:table-cell">
-                            Data
+                            Data da Fatura
                           </TableHead>
                           <TableHead className="text-right text-xs">
-                            Total
+                            Total da Fatura
                           </TableHead>
                         </TableRow>
                       </TableHeader>

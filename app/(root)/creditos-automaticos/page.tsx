@@ -1,5 +1,5 @@
 "use client";
-import "./faturacaoAutomatica.css";
+import "./creditosAutomaticos.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Card } from "@/components/ui/card";
@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Toaster, toast } from "sonner";
 import ControlPanel from "@/components/ui/controlPanel";
 import { Atom } from "react-loading-indicators";
-import DropdownReferencias from "../pedidos-valorizacao/components/dropdownReferencias";
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -20,13 +19,6 @@ const formatDate = (dateString) => {
 interface Invoice {
   id: string;
   identidade: number;
-  seguradora: string;
-  idRamo: string;
-  estadoSinistro: string;
-  estadoClinico: string;
-  pensionista: string;
-  dataadmissao: string;
-  dataalta: string;
   nomesinistrado: string;
   idprocesso: string;
   numapolice: string;
@@ -37,14 +29,12 @@ interface Invoice {
     descricao: string;
     qtt: number;
     valorunit: number;
-    idrequisicao: string | null;
-    nrAp: number;
-    ApVendida: number;
-    ApIsenta: number;
-    linhaFaturada: number;
-    linhaIsenta: number;
-    datafinal: string | null;
-    dataopen: string | null;
+    idrequisicao: string;
+    idrequisicaoactomedico: string;
+    dataFinal: string;
+    dataOpen: string;
+    texto: string;
+    fiStamp: string;
   }>;
 }
 
@@ -93,19 +83,6 @@ export default function InvoicePreview() {
     return () => clearInterval(interval);
   }, []);
 
-  const fetchPriceTableData = async () => {
-    try {
-      const response = await axios.get("/api/tabelaPrecosCliente");
-      setPriceTableData(response.data);
-    } catch (error) {
-      console.error("Error fetching price table data:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchPriceTableData(); // Fetch data when the component mounts
-  }, []);
-
   const handleLineChange = (index, key, value) => {
     const updatedLines = [...modifiedLines];
     updatedLines[index] = { ...updatedLines[index], [key]: value };
@@ -120,14 +97,14 @@ export default function InvoicePreview() {
     setModifiedLines([
       ...modifiedLines,
       {
-        idlinha: modifiedLines.length > 0 ? modifiedLines.length + 1 : 1,
+        idLinha: modifiedLines.length > 0 ? modifiedLines.length + 1 : 1,
         ref: item.ref,
         descricao: item.descricao,
         qtt: 1,
         valorunit: item.valorunit,
-        idrequisicao: null,
-        datafinal: null,
-        dataopen: null,
+        idrequisicao: item.idrequisicao,
+        datafinal: item.datafinal,
+        dataopen: item.dataopen,
       },
     ]);
     setIsModalOpen(false);
@@ -152,44 +129,8 @@ export default function InvoicePreview() {
   };
 
   // Handlers for button clicks
-  const handleProcessosSimplesClick = () => {
-    fetchInvoices("/api/faturar-processos-simples");
-  };
-
-  const handleMotorAgeasClick = () => {
-    fetchInvoices("/api/motor-ageas");
-  };
-
-  const handleMotorAgeasApClick = () => {
-    fetchInvoices("/api/motor-ageas-ap");
-  };
-
-  const handleMotorAgeasPensionistasClick = () => {
-    fetchInvoices("/api/motor-ageas-pensionistas");
-  };
-
-  const handleMotorOcidentalClick = () => {
-    fetchInvoices("/api/motor-ocidental");
-  };
-
-  const handleMotorOcidentalApClick = () => {
-    fetchInvoices("/api/motor-ocidental-ap");
-  };
-
-  const handleMotorOcidentalPensionistasClick = () => {
-    fetchInvoices("/api/motor-ocidental-pensionistas");
-  };
-
-  const handleMotorZurichClick = () => {
-    fetchInvoices("/api/motor-zurich");
-  };
-
-  const handleEventosAllianzClick = () => {
-    fetchInvoices("/api/eventos-allianz");
-  };
-
-  const handleFeesUnaClick = () => {
-    fetchInvoices("/api/fee-una");
+  const handleNotasCreditoAgeas = () => {
+    fetchInvoices("/api/notas-credito-ageas");
   };
 
   const handleOpenProcess = () => {
@@ -207,7 +148,7 @@ export default function InvoicePreview() {
       setIsSending(true);
       try {
         const soapRequest = {
-          action: "CreateInvoice",
+          action: "CreateCreditNote",
           invoiceDetails: {
             id: currentInvoice.id,
             identidade: currentInvoice.identidade,
@@ -222,16 +163,16 @@ export default function InvoicePreview() {
               qtt: line.qtt,
               valorunit: line.valorunit,
               idrequisicao: line.idrequisicao,
-              bistamp: line.bistamp || "",
-              u_facturatmpstamp: line.u_facturatmpstamp || "",
-              datafinal: line.datafinal,
-              dataopen: line.dataopen,
-              idavenca: line.idavenca || null,
+              idrequisicaoactomedico: line.idrequisicaoactomedico,
+              datafinal: "",
+              dataopen: "",
+              texto: line.texto,
+              fistamp: line.fistamp,
             })),
           },
         };
 
-        await axios.post("/api/emitir-fatura", soapRequest);
+        await axios.post("/api/emitir-nota-credito", soapRequest);
 
         setApprovedCount((prevCount) => prevCount + 1);
         setApprovedTotal((prevTotal) => prevTotal + (calculateTotal() || 0));
@@ -246,7 +187,7 @@ export default function InvoicePreview() {
 
         resolve();
       } catch (error) {
-        console.error("Erro ao enviar Fatura para o PHC:", error);
+        console.error("Erro ao enviar Nota de Crédito para o PHC:", error);
         reject(error);
       } finally {
         setIsSending(false);
@@ -264,9 +205,9 @@ export default function InvoicePreview() {
         setTimeout(() => {
           const success = true;
           if (success) {
-            resolve({ name: "Fatura emitida com Sucesso" });
+            resolve({ name: "Nota de Crédito criada com Sucesso" });
           } else {
-            reject(new Error("Erro ao emitir fatura."));
+            reject(new Error("Erro ao emitir Nota de Crédito."));
           }
         }, 2000)
       );
@@ -277,7 +218,7 @@ export default function InvoicePreview() {
         handleNext();
         return `${(data as { name: string }).name}`;
       },
-      error: (err) => `Erro ao emitir fatura: ${err.message}`,
+      error: (err) => `Erro ao criar a Nota de Crédito: ${err.message}`,
     });
   };
 
@@ -291,7 +232,7 @@ export default function InvoicePreview() {
 
   const handleModalSubmit = () => {
     console.log("Recusada com o motivo:", refuseReason);
-    toast.error("Fatura recusada com sucesso!");
+    toast.error("Nota de Crédito Recusada com Sucesso");
     setIsModalOpen(false);
 
     if (currentIndex < invoices.length - 1) {
@@ -344,7 +285,7 @@ export default function InvoicePreview() {
                     <div className="flex flex-row items-center justify-between ">
                       <div className="flex flex-col gap-2 mr-4">
                         <p className="text-sm font-medium text-center mt-2">
-                          <strong>Faturas por Aprovar</strong>
+                          <strong>Notas de Crédito por Emitir</strong>
                         </p>
                         <p className="text-xl font-normal text-center">
                           {invoiceCount}
@@ -352,7 +293,7 @@ export default function InvoicePreview() {
                       </div>
                       <div className="flex flex-col gap-2 ml-4">
                         <p className="text-sm font-medium text-center mt-2">
-                          <strong>Faturas Aprovadas</strong>
+                          <strong>Notas de Crédito Emitidas</strong>
                         </p>
                         <p className="text-xl font-normal text-center">
                           {approvedCount}
@@ -362,7 +303,7 @@ export default function InvoicePreview() {
                   </Card>
                   <Card className="relative bg-white flex-1 items-center justify-center p-4 my-2 mx-2 overflow-x-hidden">
                     <p className="text-sm font-medium text-center mt-2">
-                      <strong>Total Faturado:</strong>
+                      <strong>Total Creditado:</strong>
                     </p>
                     <p className="text-xl font-normal text-center">
                       {approvedTotal.toFixed(2)}€
@@ -377,87 +318,15 @@ export default function InvoicePreview() {
               <main className="text-xs py-2 px-2">
                 <div className="m-1 max-h-screen flex flex-col text-xs gap-4">
                   <p className="text-sm font-medium text-center ">
-                    <strong>Faturação Automática:</strong>
+                    <strong>Emissão Automática de Notas de Crédito:</strong>
                   </p>
                   <Button
-                    onClick={handleProcessosSimplesClick}
+                    onClick={handleNotasCreditoAgeas} // Call the appropriate handler
                     className="text-xs gap-2 bg-gray-100 border-gray-200 text-black-600 hover:bg-gray-200 hover:border-gray-300"
                     variant="outline"
                     size="sm"
                   >
-                    Processos Simples
-                  </Button>
-                  <Button
-                    onClick={handleEventosAllianzClick} // Call the appropriate handler
-                    className="text-xs gap-2 bg-gray-100 border-gray-200 text-black-600 hover:bg-gray-200 hover:border-gray-300"
-                    variant="outline"
-                    size="sm"
-                  >
-                    Eventos Allianz
-                  </Button>
-                  <Button
-                    onClick={handleFeesUnaClick} // Call the appropriate handler
-                    className="text-xs gap-2 bg-gray-100 border-gray-200 text-black-600 hover:bg-gray-200 hover:border-gray-300"
-                    variant="outline"
-                    size="sm"
-                  >
-                    Fee - UNA
-                  </Button>
-                  <Button
-                    onClick={handleMotorAgeasClick} // Call the appropriate handler
-                    className="text-xs gap-2 bg-gray-100 border-gray-200 text-black-600 hover:bg-gray-200 hover:border-gray-300"
-                    variant="outline"
-                    size="sm"
-                  >
-                    Motor AGEAS
-                  </Button>
-                  <Button
-                    onClick={handleMotorAgeasApClick} // Call the appropriate handler
-                    className="text-xs gap-2 bg-gray-100 border-gray-200 text-black-600 hover:bg-gray-200 hover:border-gray-300"
-                    variant="outline"
-                    size="sm"
-                  >
-                    Motor AGEAS AP
-                  </Button>
-                  <Button
-                    onClick={handleMotorAgeasPensionistasClick} // Call the appropriate handler
-                    className="text-xs gap-2 bg-gray-100 border-gray-200 text-black-600 hover:bg-gray-200 hover:border-gray-300"
-                    variant="outline"
-                    size="sm"
-                  >
-                    Motor AGEAS Pensionistas
-                  </Button>
-                  <Button
-                    onClick={handleMotorOcidentalClick} // Call the appropriate handler
-                    className="text-xs gap-2 bg-gray-100 border-gray-200 text-black-600 hover:bg-gray-200 hover:border-gray-300"
-                    variant="outline"
-                    size="sm"
-                  >
-                    Motor OCIDENTAL
-                  </Button>
-                  <Button
-                    onClick={handleMotorOcidentalApClick} // Call the appropriate handler
-                    className="text-xs gap-2 bg-gray-100 border-gray-200 text-black-600 hover:bg-gray-200 hover:border-gray-300"
-                    variant="outline"
-                    size="sm"
-                  >
-                    Motor OCIDENTAL AP
-                  </Button>
-                  <Button
-                    onClick={handleMotorOcidentalPensionistasClick} // Call the appropriate handler
-                    className="text-xs gap-2 bg-gray-100 border-gray-200 text-black-600 hover:bg-gray-200 hover:border-gray-300"
-                    variant="outline"
-                    size="sm"
-                  >
-                    Motor OCIDENTAL Pensionistas
-                  </Button>
-                  <Button
-                    onClick={handleMotorZurichClick} // Call the appropriate handler
-                    className="text-xs gap-2 bg-gray-100 border-gray-200 text-black-600 hover:bg-gray-200 hover:border-gray-300"
-                    variant="outline"
-                    size="sm"
-                  >
-                    Motor Zurich
+                    Notas de Crédito AGEAS
                   </Button>
                 </div>
               </main>
@@ -470,7 +339,7 @@ export default function InvoicePreview() {
               <Atom
                 color="#51BCD7"
                 size="large"
-                text="A procurar processos para faturar..."
+                text="A procurar processos para creditar..."
                 textColor="#000000"
               />{" "}
             </div>
@@ -479,11 +348,9 @@ export default function InvoicePreview() {
               <header className="border-b-[1px] border-gray-200 text-primary-foreground py-2 px-2">
                 <div className="container w-full flex justify-between items-center">
                   <h1 className="text-sm font-bold uppercase">
-                    {currentInvoice?.seguradora || ""}
+                    {currentInvoice?.identidade || ""}
                   </h1>
-                  <div className="flex gap-2 ml-auto">
-                    {" "}
-                    {/* Add ml-auto here */}
+                  <div className="flex gap-2">
                     <Button
                       className="text-xs border-blue-600 text-blue-600 hover:bg-blue-200 hover:border-transparent"
                       variant="outline"
@@ -507,7 +374,7 @@ export default function InvoicePreview() {
                       onClick={handleSendToERP}
                       disabled={isSending}
                     >
-                      {isSending ? "A processar..." : "Aprovar"}
+                      {isSending ? "A processar..." : "Emitir"}
                     </Button>
                   </div>
                 </div>
@@ -526,40 +393,17 @@ export default function InvoicePreview() {
                             <strong>Apólice:</strong>{" "}
                             {currentInvoice.numapolice}
                           </p>
-                          <p>
-                            <strong>Estado Sinistro:</strong>{" "}
-                            {currentInvoice.estadoSinistro}
-                          </p>
-                          <p>
-                            <strong>Data de Alta:</strong>{" "}
-                            {formatDate(currentInvoice.dataalta)}
-                          </p>
                         </div>
                         <div className="flex flex-col text-nowrap w-[80%] ml-12">
                           <p>
                             <strong>Processo TRUST:</strong>{" "}
                             {currentInvoice.idprocesso}
                           </p>
-                          <p>
-                            <strong>Estado Clínico:</strong>{" "}
-                            {currentInvoice.estadoClinico}
-                          </p>
-                          <p>
-                            <strong>Ramo:</strong> {currentInvoice.idRamo}
-                          </p>
                         </div>
                         <div className="flex flex-col text-nowrap">
                           <p>
                             <strong>Processo Seguradora:</strong>{" "}
                             {currentInvoice.numprocseguradora}
-                          </p>
-                          <p>
-                            <strong>Pensionista:</strong>{" "}
-                            {currentInvoice.pensionista}
-                          </p>
-                          <p>
-                            <strong>Data de Admissão:</strong>{" "}
-                            {formatDate(currentInvoice.dataadmissao)}
                           </p>
                         </div>
                       </div>
@@ -673,7 +517,7 @@ export default function InvoicePreview() {
                           variant="outline"
                           size="sm"
                         >
-                          Adicionar
+                          Adicionar Linha
                         </Button>
                       </div>
                       <div className="mt-32 mb-10 relative flex flex-row justify-end">
@@ -757,7 +601,7 @@ export default function InvoicePreview() {
                       </div>
                     </div>
                   ) : (
-                    <p>Nenhuma fatura encontrada.</p>
+                    <p>Nenhuma nota de crédito encontrada para emissão.</p>
                   )}
                 </div>
               </main>
@@ -765,23 +609,6 @@ export default function InvoicePreview() {
           )}
         </div>
       </div>
-
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] max-w-md">
-            <h2 className="text-lg font-bold mb-4">Selecione um Item</h2>
-            <DropdownReferencias data={priceTableData} />
-            <div className="flex justify-end gap-2 mt-4">
-              <Button
-                className="bg-gray-100 text-black hover:bg-gray-200"
-                onClick={() => setIsModalOpen(false)}
-              >
-                Cancelar
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {isConfirmModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -810,6 +637,7 @@ export default function InvoicePreview() {
           </div>
         </div>
       )}
+
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] max-w-md">

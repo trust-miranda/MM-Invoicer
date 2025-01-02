@@ -30,7 +30,9 @@ export function SidebarAccordion({ isCollapsed }: SidebarAccordionProps) {
               width={34}
               height={34}
               alt="Trust Parcerias"
-              className={`${isCollapsed ? "size-8 max-xl:size-14 mb-6" : "hidden"}`}
+              className={`${
+                isCollapsed ? "size-8 max-xl:size-14 mb-6" : "hidden"
+              }`}
             />
             <AccordionContent
               className={isCollapsed ? "hidden" : "text-xs text-nowrap"}
@@ -63,7 +65,9 @@ export function SidebarAccordion({ isCollapsed }: SidebarAccordionProps) {
               width={34}
               height={34}
               alt="Trust Financeiro"
-              className={`${isCollapsed ? "size-8 max-xl:size-14 mb-6" : "hidden"}`}
+              className={`${
+                isCollapsed ? "size-8 max-xl:size-14 mb-6" : "hidden"
+              }`}
             />
             <AccordionContent
               className={isCollapsed ? "hidden" : "text-xs text-nowrap"}
@@ -85,11 +89,11 @@ export function SidebarAccordion({ isCollapsed }: SidebarAccordionProps) {
               Faturação Semi-Automática
             </AccordionContent>
           </Link>
-          <Link href={"motores-faturacao"}>
+          <Link href={"creditos-automaticos"}>
             <AccordionContent
               className={isCollapsed ? "hidden" : "text-xs text-nowrap"}
             >
-              Faturação Retrógrada
+              Emissão de Créditos Automáticos
             </AccordionContent>
           </Link>
           <Link href={"rossum"}>
@@ -140,7 +144,9 @@ export function SidebarAccordion({ isCollapsed }: SidebarAccordionProps) {
             width={34}
             height={34}
             alt="Trust Operacoes"
-            className={`${isCollapsed ? "size-8 max-xl:size-14 mb-6" : "hidden"}`}
+            className={`${
+              isCollapsed ? "size-8 max-xl:size-14 mb-6" : "hidden"
+            }`}
           />
           <AccordionContent
             className={isCollapsed ? "hidden" : "text-xs text-nowrap"}
@@ -175,7 +181,9 @@ export function SidebarAccordion({ isCollapsed }: SidebarAccordionProps) {
               width={34}
               height={34}
               alt="Trust Administracao"
-              className={`${isCollapsed ? "size-8 max-xl:size-14 mb-6" : "hidden"}`}
+              className={`${
+                isCollapsed ? "size-8 max-xl:size-14 mb-6" : "hidden"
+              }`}
             />
             <AccordionContent
               className={isCollapsed ? "hidden" : "text-xs text-nowrap"}

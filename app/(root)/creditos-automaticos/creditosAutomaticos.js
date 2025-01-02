@@ -1,6 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-import axios from "axios";
-import sql from "mssql"; // Assuming you're using MSSQL for database queries.
+const sql = require("mssql");
+const axios = require("axios");
 
 const dbConfig = {
   server: "192.168.1.240",
@@ -8,58 +7,37 @@ const dbConfig = {
   user: "5033",
   password: "manel123456",
   options: {
-    encrypt: false, // Use this if the server requires encrypted connections.
-    trustServerCertificate: true, // Set to true if using self-signed certificates.
+    encrypt: false,
     enableArithAbort: true,
     requestTimeout: 600000,
   },
 };
 
-let pool; // To reuse the connection pool.
+const WEBSERVICE_URL = "http://192.168.1.12/intranet/ws/wscript.asmx";
+const SOAP_ACTION = "http://www.phc.pt/RunCode";
+const USERNAME = "Intranet";
+const PASSWORD = "Trust#2024!";
 
-async function getDatabasePool() {
-  if (!pool) {
-    pool = await sql.connect(dbConfig);
-  }
-  return pool;
-}
+const createSoapBody = (jsonData) => `
+  <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+    <soap:Body>
+      <RunCode xmlns="http://www.phc.pt/">
+        <userName>${USERNAME}</userName>
+        <password>${PASSWORD}</password>
+        <code>MMInvoicerCriaNC</code>
+        <parameter><![CDATA[${jsonData}]]></parameter>
+      </RunCode>
+    </soap:Body>
+  </soap:Envelope>
+`;
 
-// Add a delay function
-function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-export async function POST(req: NextRequest) {
+async function fetchAndProcessInvoices() {
   try {
-    const { invoiceDetails } = await req.json();
-
-    if (!invoiceDetails) {
-      return NextResponse.json(
-        { error: "Missing JSON data for SOAP request." },
-        { status: 400 }
-      );
-    }
-
-    const WEBSERVICE_URL = "http://192.168.1.12/intranet/ws/wscript.asmx";
-    const SOAP_ACTION = "http://www.phc.pt/RunCode";
-    const USERNAME = "Intranet";
-    const PASSWORD = "Trust#2024!";
-
-    const createSoapBody = (jsonData: string) => `
-    <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-      <soap:Body>
-        <RunCode xmlns="http://www.phc.pt/">
-          <userName>${USERNAME}</userName>
-          <password>${PASSWORD}</password>
-          <code>MMInvoicerCriaNC</code>
-          <parameter><![CDATA[${jsonData}]]></parameter>
-        </RunCode>
-      </soap:Body>
-    </soap:Envelope>
-    `;
-
-    const dbPool = await getDatabasePool();
-    const result = await dbPool.request().query(`
+    // Connect to the database
+    const pool = await sql.connect(dbConfig);
+    const result = await pool.request().query(`
+SELECT *
+FROM notasCredito n
 SELECT *
 FROM notasCredito
 WHERE id IN ('1D5984D3-A30E-448D-86C9-31F892D5EF96',
@@ -108,11 +86,12 @@ WHERE id IN ('1D5984D3-A30E-448D-86C9-31F892D5EF96',
 '61D85389-3BF7-411B-92EF-7F117EFD04D0')
     `);
 
+    // Process the result
     const groupedResult = result.recordset.reduce((acc, row) => {
-      const id = row.id || "";
+      const id = row.id ? row.id : "";
       if (!acc[id]) {
         acc[id] = {
-          id,
+          id: row.id || "",
           identidade: row.identidade ? parseInt(row.identidade, 10) : null,
           nomesinistrado: row.nomesinistrado || "",
           idprocesso: row.idprocesso || "",
@@ -129,7 +108,7 @@ WHERE id IN ('1D5984D3-A30E-448D-86C9-31F892D5EF96',
         descricao: row.descricao || "",
         qtt: row.qtt || 0,
         valorunit: parseFloat(row.valorunit) || 0,
-        idrequisicao: row.idrequisicao || "0",
+        idrequisicao: row.idrequisicao || "",
         idrequisicaoactomedico: row.idrequisicaoactomedico || "",
         datafinal: row.datafinal || "1723849200",
         dataopen: row.dataopen || "1718665200",
@@ -145,18 +124,20 @@ WHERE id IN ('1D5984D3-A30E-448D-86C9-31F892D5EF96',
       ({ idLinhaCounter, ...rest }) => rest
     );
 
+    // Send the data to the ERP API
     const responses = [];
     for (const invoiceDetails of formattedResult) {
       const jsonData = JSON.stringify({
         ...invoiceDetails,
-        ResultLinhas: invoiceDetails.ResultLinhas.map((line) => ({ ...line })),
+        ResultLinhas: invoiceDetails.ResultLinhas.map((line) => ({
+          ...line,
+        })),
       });
 
-      // Directly include JSON in CDATA without escaping
       const soapBody = createSoapBody(jsonData);
       const headers = {
         "Content-Type": "text/xml; charset=utf-8",
-        "Content-Length": Buffer.byteLength(soapBody).toString(),
+        "Content-Length": Buffer.byteLength(soapBody),
         SOAPAction: SOAP_ACTION,
       };
 
@@ -168,38 +149,19 @@ WHERE id IN ('1D5984D3-A30E-448D-86C9-31F892D5EF96',
           `SOAP request for invoice ${invoiceDetails.id} sent successfully. Response:`,
           response.data
         );
-        responses.push({
-          invoiceId: invoiceDetails.id,
-          status: "success",
-          data: response.data,
-        });
       } catch (err) {
         console.error(
           `Error sending SOAP request for invoice ${invoiceDetails.id}:`,
           err.message
         );
-        console.error("SOAP Body Sent:", soapBody);
-        console.error("Response Data (if any):", err.response?.data);
-        responses.push({
-          invoiceId: invoiceDetails.id,
-          status: "error",
-          error: err.message,
-        });
       }
-
-      // Add delay to avoid rate-limiting
-      await delay(200);
     }
-
-    return NextResponse.json({
-      message: "SOAP requests completed",
-      responses,
-    });
   } catch (error) {
-    console.error("Error in POST handler:", error);
-    return NextResponse.json(
-      { error: "Internal server error", details: error.message },
-      { status: 500 }
-    );
+    console.error("Database query error:", error);
+  } finally {
+    sql.close(); // Close the database connection
   }
 }
+
+// Execute the function
+fetchAndProcessInvoices();

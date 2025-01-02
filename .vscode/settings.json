@@ -2,5 +2,7 @@
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
   },
-  "typescript.tsdk": "node_modules\\typescript\\lib"
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "liveServer.settings.CustomBrowser": "chrome",
+  "liveServer.settings.host": "localhost"
 }

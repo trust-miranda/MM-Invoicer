@@ -173,7 +173,9 @@ export default function InvoicePreview() {
         </div>
         {/* Main Invoice Display */}
         <Card
-          className={`relative bg-white flex-1 items-center justify-center p-4 ${isAnimating ? "fade-out" : "fade-in"}`}
+          className={`relative bg-white flex-1 items-center justify-center p-4 ${
+            isAnimating ? "fade-out" : "fade-in"
+          }`}
         >
           {selectedInvoice ? (
             <>

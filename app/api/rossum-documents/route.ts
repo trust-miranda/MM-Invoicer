@@ -1,18 +1,40 @@
 import { NextRequest, NextResponse } from "next/server";
 
+async function fetchAuthToken(): Promise<string | null> {
+  try {
+    const authResponse = await fetch("http://localhost:3000/api/rossum-auth", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!authResponse.ok) {
+      console.error("Failed to fetch auth token:", authResponse.statusText);
+      return null;
+    }
+
+    const authData = await authResponse.json();
+    return authData.token;
+  } catch (error) {
+    console.error("Error fetching auth token:", error);
+    return null;
+  }
+}
+
 export async function GET(req: NextRequest) {
-  const token = req.headers.get("Authorization")?.replace("Bearer ", "");
+  const token = await fetchAuthToken();
 
   if (!token) {
     return NextResponse.json(
-      { error: "Missing authorization token" },
+      { error: "Failed to retrieve authorization token" },
       { status: 401 }
     );
   }
 
   try {
     const response = await fetch(
-      "https://trust-saude.rossum.app/api/v1/queues/1177502/export?status=to_review&format=json",
+      "https://trust-saude.rossum.app/api/v1/queues/1177502/export?status=exported&format=json",
       {
         method: "GET",
         headers: {
